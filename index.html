@@ -1,150 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plyr HLS Player</title>
+  <meta charset="UTF-8">
+  <title>Star Sports HD1 Hindi - matcheslinks | Redirecting...</title>
 
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css"/>
+  <!-- ✅ Redirect for Android NSPlayer -->
+  <meta http-equiv="refresh" content="0.5;url=intent:https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd?__hdnea__=st=1766315257~exp=1766401657~acl=/*~hmac=622bd1fdd8cb9f6f496f89309dd243b367209e43d1dde502eef76884902f13a0|drmScheme=clearkey&drmLicense=400131994b445d8c8817202248760fda:2d56cb6f07a75b9aff165d534ae2bfc4#Intent;package=com.genuine.leone;S.title=Star Sports HD1 Hindi - matcheslinks;end">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+  <!-- ✅ Fallback for non-Android devices -->
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      if (!/Android/i.test(navigator.userAgent)) {
+        const meta = document.querySelector('meta[http-equiv="refresh"]');
+        if (meta) {
+          meta.content = "0;url=https://play.google.com/store/apps/details?id=com.genuine.leone";
+        }
+      }
+    });
+  </script>
 
-body{
-    background:#000;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    overflow:hidden;
-}
-
-.container{
-    width:100%;
-    max-width:1200px;
-}
-
-video{
-    width:100%;
-    height:auto;
-}
-</style>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+    a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .tg-popup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0088cc;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .tg-popup:hover {
+      background: #0077b6;
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 
 <body>
+  <h1>Opening Star Sports HD1 Hindi - matcheslinks...</h1>
+  <p>
+    If you're not redirected automatically,
+    <a href="intent:*http://filex.me:8080/live/amin007007/nxKYVmQsTZ/1369002.m3u8#Intent;package=com.genuine.leone;S.title=Star Sports HD1 Hindi - matcheslinks;end">
+      click here
+    </a>.
+  </p>
+  <p>
+    Don’t have NSPlayer?
+    <a href="https://play.google.com/store/apps/details?id=com.genuine.leone">Install from Play Store</a>
+  </p>
 
-<div class="container">
-    <video
-        id="player"
-        controls
-        playsinline
-        crossorigin="anonymous">
-    </video>
-</div>
+  <!-- ✅ Telegram floating button -->
+  <a href="https://t.me/+l-BV45YWZoM3ZmE9" class="tg-popup" target="_blank">
+    💬 Join Telegram
+  </a>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
-<script>
-
-const stream =
-"http://filex.me:8080/live/amin007007/nxKYVmQsTZ/1369002.m3u8";
-
-// CORS Proxy
-const source =
-"https://cors-everywhere-wc8b4.ondigitalocean.app/" + stream;
-
-const video = document.getElementById("player");
-
-const player = new Plyr(video,{
-    controls:[
-        "play-large",
-        "play",
-        "progress",
-        "current-time",
-        "duration",
-        "mute",
-        "volume",
-        "settings",
-        "pip",
-        "airplay",
-        "fullscreen"
-    ]
-});
-
-if(Hls.isSupported()){
-
-    const hls = new Hls({
-        enableWorker:true,
-        lowLatencyMode:true,
-        backBufferLength:90,
-        debug:true
+  <!-- ✅ Instant Telegram join prompt -->
+  <script>
+    window.addEventListener("load", function () {
+      if (window.confirm("Join @shrey7nshfb for more live links?")) {
+        window.location.href = "https://t.me/+l-BV45YWZoM3ZmE9";
+      }
     });
-
-    hls.loadSource(source);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MEDIA_ATTACHED,()=>{
-        console.log("Media Attached");
-    });
-
-    hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-        console.log("Manifest Loaded");
-        video.play().catch(()=>{});
-    });
-
-    hls.on(Hls.Events.LEVEL_SWITCHED,(e,data)=>{
-        console.log("Quality:",data.level);
-    });
-
-    hls.on(Hls.Events.ERROR,(event,data)=>{
-
-        console.log("HLS ERROR:",data);
-
-        if(data.fatal){
-
-            switch(data.type){
-
-                case Hls.ErrorTypes.NETWORK_ERROR:
-                    console.log("Recovering Network Error");
-                    hls.startLoad();
-                    break;
-
-                case Hls.ErrorTypes.MEDIA_ERROR:
-                    console.log("Recovering Media Error");
-                    hls.recoverMediaError();
-                    break;
-
-                default:
-                    hls.destroy();
-                    alert("Fatal Error: "+data.details);
-                    break;
-
-            }
-
-        }
-
-    });
-
-}else if(video.canPlayType("application/vnd.apple.mpegurl")){
-
-    video.src=source;
-
-    video.addEventListener("loadedmetadata",()=>{
-        video.play().catch(()=>{});
-    });
-
-}else{
-
-    alert("HLS Not Supported");
-
-}
-
-</script>
-
+  </script>
 </body>
 </html>
