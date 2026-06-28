@@ -3,73 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HLS Player</title>
+<title>Plyr HLS Player</title>
 
 <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css"/>
 
 <style>
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
     background:#000;
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
+    overflow:hidden;
 }
+
 .container{
     width:100%;
-    max-width:1100px;
+    max-width:1200px;
+}
+
+video{
+    width:100%;
+    height:auto;
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
     <video
         id="player"
-        playsinline
         controls
-        crossorigin
-    ></video>
+        playsinline
+        crossorigin="anonymous">
+    </video>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
 <script>
-const video = document.getElementById("player");
 
-const source =
+const stream =
 "http://filex.me:8080/live/amin007007/nxKYVmQsTZ/1369002.m3u8";
 
-const player = new Plyr(video, {
-    controls: [
-        'play-large',
-        'play',
-        'progress',
-        'current-time',
-        'mute',
-        'volume',
-        'settings',
-        'pip',
-        'airplay',
-        'fullscreen'
+// CORS Proxy
+const source =
+"https://cors-everywhere-wc8b4.ondigitalocean.app/" + stream;
+
+const video = document.getElementById("player");
+
+const player = new Plyr(video,{
+    controls:[
+        "play-large",
+        "play",
+        "progress",
+        "current-time",
+        "duration",
+        "mute",
+        "volume",
+        "settings",
+        "pip",
+        "airplay",
+        "fullscreen"
     ]
 });
 
-if (Hls.isSupported()) {
-    const hls = new Hls();
+if(Hls.isSupported()){
+
+    const hls = new Hls({
+        enableWorker:true,
+        lowLatencyMode:true,
+        backBufferLength:90,
+        debug:true
+    });
 
     hls.loadSource(source);
     hls.attachMedia(video);
 
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
+    hls.on(Hls.Events.MEDIA_ATTACHED,()=>{
+        console.log("Media Attached");
+    });
+
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+        console.log("Manifest Loaded");
         video.play().catch(()=>{});
     });
 
-} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = source;
+    hls.on(Hls.Events.LEVEL_SWITCHED,(e,data)=>{
+        console.log("Quality:",data.level);
+    });
+
+    hls.on(Hls.Events.ERROR,(event,data)=>{
+
+        console.log("HLS ERROR:",data);
+
+        if(data.fatal){
+
+            switch(data.type){
+
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                    console.log("Recovering Network Error");
+                    hls.startLoad();
+                    break;
+
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                    console.log("Recovering Media Error");
+                    hls.recoverMediaError();
+                    break;
+
+                default:
+                    hls.destroy();
+                    alert("Fatal Error: "+data.details);
+                    break;
+
+            }
+
+        }
+
+    });
+
+}else if(video.canPlayType("application/vnd.apple.mpegurl")){
+
+    video.src=source;
+
+    video.addEventListener("loadedmetadata",()=>{
+        video.play().catch(()=>{});
+    });
+
+}else{
+
+    alert("HLS Not Supported");
+
 }
+
 </script>
 
 </body>
